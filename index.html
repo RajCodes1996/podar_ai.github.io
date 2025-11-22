@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Podar AI | ChatGPT Style UI</title>
+
+<style>
+
+    body {
+        margin: 0;
+        padding: 0;
+        background: #0f0f0f;
+        font-family: "Inter", sans-serif;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Main 3D Heading */
+.header {
+    font-size: 32px;
+    font-weight: 900;
+    color: #ffffff;
+    text-align: center;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+
+    text-shadow: 
+        0px 0px 5px rgba(255, 255, 255, 0.9),
+        0px 0px 10px rgba(0, 150, 255, 0.8),
+        0px 0px 20px rgba(0, 120, 255, 0.7),
+        0px 3px 0px #000,
+        0px 5px 10px rgba(0, 0, 0, 0.5);
+
+    animation: floating3D 3s ease-in-out infinite;
+    
+}
+
+/* New Sub-heading */
+.sub-header {
+    font-size: 16px;
+    color: #00c6ff;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+    opacity: 0;
+
+    text-shadow: 
+        0 0 5px rgba(0, 200, 255, 0.8),
+        0 0 10px rgba(0, 200, 255, 0.5);
+
+    animation: fadeSlideIn 2.2s ease-out forwards,
+               glowPulse 3s ease-in-out infinite 2.2s;
+}
+
+/* Fade + Slide Animation */
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Gentle Pulsing Glow */
+@keyframes glowPulse {
+    0% {
+        text-shadow: 
+            0 0 5px rgba(0, 200, 255, 0.7),
+            0 0 15px rgba(0, 200, 255, 0.4);
+    }
+    50% {
+        text-shadow: 
+            0 0 10px rgba(0, 200, 255, 1),
+            0 0 25px rgba(0, 200, 255, 0.7);
+    }
+    100% {
+        text-shadow: 
+            0 0 5px rgba(0, 200, 255, 0.7),
+            0 0 15px rgba(0, 200, 255, 0.4);
+    }
+}
+
+/* Existing Floating 3D Header Animation */
+@keyframes floating3D {
+    0%   { transform: translateY(0px) rotateX(0deg); }
+    50%  { transform: translateY(-6px) rotateX(10deg); }
+    100% { transform: translateY(0px) rotateX(0deg); }
+}
+
+
+    /* MAIN CHAT BOX */
+    .chat-wrapper {
+        width: 100%;
+        max-width: 850px;
+        height: 92vh;
+        background: #111;
+        border: 1px solid #222;
+        border-radius: 14px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 0 18px #00000080;
+    }
+
+    input:focus, textarea:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+    .header {
+        text-align: center;
+        padding: 18px;
+        font-size: 26px;
+        font-weight: 600;
+        color: #e5e5e5;
+        background: #121212;
+        border-bottom: 1px solid #1f1f1f;
+    }
+
+    /* CHAT OUTPUT */
+    .chat-output {
+        flex: 1;
+        padding: 25px;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        background: #101010;
+    }
+
+    /* MESSAGE BUBBLES */
+    .msg {
+        max-width: 78%;
+        padding: 14px 18px;
+        margin-bottom: 15px;
+        border-radius: 14px;
+        font-size: 16px;
+        line-height: 1.6;
+        background: #1b1b1b;
+        color: #ddd;
+    }
+
+    .user {
+        background: #1e3a8a; /* Blue */
+        margin-left: auto;
+        color: #fff;
+        border-radius: 14px 14px 4px 14px;
+    }
+
+    .bot {
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 14px 14px 14px 4px;
+    }
+
+    /* INPUT BAR */
+    .input-area {
+        display: flex;
+        padding: 18px;
+        background: #111;
+        border-top: 1px solid #1f1f1f;
+    }
+
+    .input-area input {
+        flex: 1;
+        background: #1c1c1c;
+        border: 1px solid #333;
+        padding: 15px 20px;
+        border-radius: 40px;
+        color: white;
+        font-size: 17px;
+        outline: none;
+        transition: 0.2s ease;
+    }
+
+    .input-area input:focus {
+        border-color: #4ea2ff;
+        box-shadow: 0 0 8px #4ea2ff40;
+    }
+
+    .send-btn {
+        margin-left: 12px;
+        background: #bbc6d8;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 40px;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.25s;
+    }
+
+    .send-btn:hover {
+        background: #60a5fa;
+        transform: scale(1.05);
+    }
+
+    /* Typing indicator */
+    .typing {
+        width: 40px;
+        display: flex;
+        gap: 5px;
+        margin-left: 10px;
+    }
+    .typing span {
+        width: 8px;
+        height: 8px;
+        background: #666;
+        border-radius: 50%;
+        animation: blink 1.4s infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes blink {
+        0% { opacity: 0.2; transform: translateY(0px); }
+        50% { opacity: 1; transform: translateY(-3px); }
+        100% { opacity: 0.2; transform: translateY(0px); }
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="chat-wrapper">
+
+   <div class="header" style="font-family:sans-serif;">Welcome to Podar A.I</div>
+   <div class="sub-header">Podar Namaskar! <br>
+    <h5>Developed by @Rajarshi~Yadav</h52>
+   </div>
+
+
+    <div class="chat-output" id="chatOutput"></div>
+
+    <div class="input-area">
+        <input id="userInput" placeholder="Ask anything..." onkeydown="if(event.key==='Enter') sendMessage()">
+        <div class="send-btn" onclick="sendMessage()">➤</div>
+    </div>
+
+</div>
+
+<script>
+
+function sendMessage() {
+    let input = document.getElementById("userInput");
+    let text = input.value.trim();
+    if (!text) return;
+
+    let output = document.getElementById("chatOutput");
+
+    output.innerHTML += `<div class='msg user'>${text}</div>`;
+    input.value = "";
+
+    /* Typing indicator */
+    let typingDiv = document.createElement("div");
+    typingDiv.className = "msg bot";
+    typingDiv.innerHTML = `
+        <div class="typing">
+            <span></span><span></span><span></span>
+        </div>`;
+    output.appendChild(typingDiv);
+
+    output.scrollTop = output.scrollHeight;
+
+    setTimeout(() => {
+        typingDiv.remove();
+
+        let reply = botReply(text);
+
+        let botMsg = document.createElement("div");
+        botMsg.className = "msg bot";
+        botMsg.innerHTML = `<span class="botText"></span>`;
+        output.appendChild(botMsg);
+
+        typeWriterEffect(reply, botMsg.querySelector(".botText"));
+
+        output.scrollTop = output.scrollHeight;
+
+    }, 700);
+}
+
+/* TYPEWRITER EFFECT */
+function typeWriterEffect(text, element) {
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, 18);
+        }
+    }
+    type();
+}
+
+/* BOT LOGIC */
+function botReply(userText) {
+    userText = userText.toLowerCase();
+
+    if (userText.includes("hello") || userText.includes("hi"))
+        return "Podar Namaskar! How can I assist you today?";
+
+    if (userText.includes("about school"))
+    return "Podar International School, founded in 1927, is a trusted education network with 150+ schools, offering value-based, modern, and holistic learning for over 2,50,000 students. Visit: www.podareducation.org";
+
+    if (userText.includes("school timing"))
+        return "School timings at Podar are 8:00 AM to 2:00 PM.";
+
+    return "Thanks for your query! I'll help you with more information shortly.";
+}
+
+</script>
+
+</body>
+</html>
