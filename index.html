@@ -1,321 +1,391 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Podar AI | ChatGPT Style UI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podar A.I ChatBot</title>
 
-<style>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0f0f0f;
+            font-family: "Inter", sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    body {
-        margin: 0;
-        padding: 0;
-        background: #0f0f0f;
-        font-family: "Inter", sans-serif;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+        /* MAIN CHAT BOX */
+        .chat-wrapper {
+            width: 100%;
+            max-width: 850px;
+            height: 92vh;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 18px #00000080;
+            position: relative;
+        }
 
-    /* Main 3D Heading */
-.header {
-    font-size: 32px;
-    font-weight: 900;
-    color: #ffffff;
-    text-align: center;
-    letter-spacing: 2px;
-    margin-bottom: 5px;
+        /* 3D Logo */
+        .logo {
+            width: 70px;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            filter: drop-shadow(0 0 8px #00c6ff);
+            animation: softPulse 3s infinite ease-in-out;
+        }
 
-    text-shadow: 
-        0px 0px 5px rgba(255, 255, 255, 0.9),
-        0px 0px 10px rgba(0, 150, 255, 0.8),
-        0px 0px 20px rgba(0, 120, 255, 0.7),
-        0px 3px 0px #000,
-        0px 5px 10px rgba(0, 0, 0, 0.5);
+        @keyframes softPulse {
+            0% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 6px #00c6ff);
+            }
 
-    animation: floating3D 3s ease-in-out infinite;
-    
-}
+            50% {
+                transform: scale(1.06);
+                filter: drop-shadow(0 0 14px #00ffff);
+            }
 
-/* New Sub-heading */
-.sub-header {
-    font-size: 16px;
-    color: #00c6ff;
-    text-align: center;
-    font-weight: 600;
-    letter-spacing: 4px;
-    margin-bottom: 20px;
-    opacity: 0;
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 6px #00c6ff);
+            }
+        }
 
-    text-shadow: 
-        0 0 5px rgba(0, 200, 255, 0.8),
-        0 0 10px rgba(0, 200, 255, 0.5);
+        /* MAIN 3D HEADING */
+        .header {
+            text-align: center;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            background: #121212;
+            letter-spacing: 2px;
+            text-shadow:
+                0 0 6px cyan,
+                0 0 20px #008cff;
+            border-bottom: 1px solid #1f1f1f;
+        }
 
-    animation: fadeSlideIn 2.2s ease-out forwards,
-               glowPulse 3s ease-in-out infinite 2.2s;
-}
+        /* SUB HEADING */
+        .sub-header {
+            text-align: center;
+            color: #00c6ff;
+            letter-spacing: 4px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            animation: fadeSlideIn 2.2s ease-out forwards;
+        }
 
-/* Fade + Slide Animation */
-@keyframes fadeSlideIn {
-    0% {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        @keyframes fadeSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-/* Gentle Pulsing Glow */
-@keyframes glowPulse {
-    0% {
-        text-shadow: 
-            0 0 5px rgba(0, 200, 255, 0.7),
-            0 0 15px rgba(0, 200, 255, 0.4);
-    }
-    50% {
-        text-shadow: 
-            0 0 10px rgba(0, 200, 255, 1),
-            0 0 25px rgba(0, 200, 255, 0.7);
-    }
-    100% {
-        text-shadow: 
-            0 0 5px rgba(0, 200, 255, 0.7),
-            0 0 15px rgba(0, 200, 255, 0.4);
-    }
-}
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-/* Existing Floating 3D Header Animation */
-@keyframes floating3D {
-    0%   { transform: translateY(0px) rotateX(0deg); }
-    50%  { transform: translateY(-6px) rotateX(10deg); }
-    100% { transform: translateY(0px) rotateX(0deg); }
-}
+        /* CHAT OUTPUT */
+        .chat-output {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            background: #101010;
+        }
 
+        /* CHAT BUBBLES */
+        .msg {
+            max-width: 78%;
+            padding: 14px 18px;
+            margin-bottom: 15px;
+            border-radius: 14px;
+            font-size: 16px;
+            line-height: 1.6;
+            background: #1b1b1b;
+            color: #ddd;
+        }
 
-    /* MAIN CHAT BOX */
-    .chat-wrapper {
-        width: 100%;
-        max-width: 850px;
-        height: 92vh;
-        background: #111;
-        border: 1px solid #222;
-        border-radius: 14px;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        box-shadow: 0 0 18px #00000080;
-    }
+        .user {
+            background: #1e3a8a;
+            color: #fff;
+            margin-left: auto;
+            border-radius: 14px 14px 4px 14px;
+        }
 
-    input:focus, textarea:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
+        .bot {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px 14px 14px 4px;
+        }
 
-    .header {
-        text-align: center;
-        padding: 18px;
-        font-size: 26px;
-        font-weight: 600;
-        color: #e5e5e5;
-        background: #121212;
-        border-bottom: 1px solid #1f1f1f;
-    }
+        /* IMAGE INSIDE BOT MESSAGE */
+        .bot img {
+            width: 240px;
+            border-radius: 10px;
+            margin-top: 8px;
+            border: 2px solid #333;
+        }
 
-    /* CHAT OUTPUT */
-    .chat-output {
-        flex: 1;
-        padding: 25px;
-        overflow-y: auto;
-        scroll-behavior: smooth;
-        background: #101010;
-    }
+        /* INPUT AREA */
+        .input-area {
+            display: flex;
+            padding: 18px;
+            background: #111;
+            border-top: 1px solid #1f1f1f;
+        }
 
-    /* MESSAGE BUBBLES */
-    .msg {
-        max-width: 78%;
-        padding: 14px 18px;
-        margin-bottom: 15px;
-        border-radius: 14px;
-        font-size: 16px;
-        line-height: 1.6;
-        background: #1b1b1b;
-        color: #ddd;
-    }
+        .input-area input {
+            flex: 1;
+            background: #1c1c1c;
+            border: 1px solid #333;
+            padding: 15px 20px;
+            border-radius: 40px;
+            color: white;
+            font-size: 17px;
+            outline: none;
+        }
 
-    .user {
-        background: #1e3a8a; /* Blue */
-        margin-left: auto;
-        color: #fff;
-        border-radius: 14px 14px 4px 14px;
-    }
+        .send-btn {
+            margin-left: 12px;
+            background: #bbc6d8;
+            padding: 0 20px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: 0.3s;
+        }
 
-    .bot {
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
-        border-radius: 14px 14px 14px 4px;
-    }
+        .send-btn:hover {
+            background: #60a5fa;
+        }
 
-    /* INPUT BAR */
-    .input-area {
-        display: flex;
-        padding: 18px;
-        background: #111;
-        border-top: 1px solid #1f1f1f;
-    }
+        /* Typing Animation */
+        .typing {
+            width: 40px;
+            display: flex;
+            gap: 5px;
+        }
 
-    .input-area input {
-        flex: 1;
-        background: #1c1c1c;
-        border: 1px solid #333;
-        padding: 15px 20px;
-        border-radius: 40px;
-        color: white;
-        font-size: 17px;
-        outline: none;
-        transition: 0.2s ease;
-    }
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: #666;
+            border-radius: 50%;
+            animation: blink 1.4s infinite;
+        }
 
-    .input-area input:focus {
-        border-color: #4ea2ff;
-        box-shadow: 0 0 8px #4ea2ff40;
-    }
+        .typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
 
-    .send-btn {
-        margin-left: 12px;
-        background: #bbc6d8;
-        padding: 0 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 40px;
-        font-size: 20px;
-        cursor: pointer;
-        transition: 0.25s;
-    }
+        .typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
 
-    .send-btn:hover {
-        background: #60a5fa;
-        transform: scale(1.05);
-    }
+        @keyframes blink {
 
-    /* Typing indicator */
-    .typing {
-        width: 40px;
-        display: flex;
-        gap: 5px;
-        margin-left: 10px;
-    }
-    .typing span {
-        width: 8px;
-        height: 8px;
-        background: #666;
-        border-radius: 50%;
-        animation: blink 1.4s infinite;
-    }
-    .typing span:nth-child(2) { animation-delay: 0.2s; }
-    .typing span:nth-child(3) { animation-delay: 0.4s; }
+            0%,
+            100% {
+                opacity: .2;
+            }
 
-    @keyframes blink {
-        0% { opacity: 0.2; transform: translateY(0px); }
-        50% { opacity: 1; transform: translateY(-3px); }
-        100% { opacity: 0.2; transform: translateY(0px); }
-    }
+            50% {
+                opacity: 1;
+                transform: translateY(-3px);
+            }
+        }
 
-</style>
+        /* Developer Section */
+
+        .logo {
+            width: 80px;
+            /* default size */
+            height: auto;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+
+            /* Make it 3D stable (non-rotating) */
+            transform: perspective(400px) translateZ(20px);
+            filter: drop-shadow(0 0 8px #00eaff);
+        }
+
+        /* Prevent overflow on tablets */
+        @media (max-width: 900px) {
+            .logo {
+                width: 65px;
+                right: 8px;
+                top: 8px;
+            }
+        }
+
+        /* Prevent overflow on smaller phones */
+        @media (max-width: 600px) {
+            .logo {
+                width: 55px;
+                right: 5px;
+                top: 5px;
+            }
+        }
+
+        /* Ultra-small screens */
+        @media (max-width: 420px) {
+            .logo {
+                width: 45px;
+                right: 4px;
+                top: 4px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="chat-wrapper">
-
-   <div class="header" style="font-family:sans-serif;">Welcome to Podar A.I</div>
-   <div class="sub-header">Podar Namaskar! <br>
-    <h5>Developed by @Rajarshi~Yadav</h52>
-   </div>
+    <div class="chat-wrapper">
 
 
-    <div class="chat-output" id="chatOutput"></div>
+        <!-- Logo -->
+        <img src="images/podar_logo.png" class="logo">
 
-    <div class="input-area">
-        <input id="userInput" placeholder="Ask anything..." onkeydown="if(event.key==='Enter') sendMessage()">
-        <div class="send-btn" onclick="sendMessage()">➤</div>
+        <div class="header">Welcome to Podar A.I</div>
+        <div class="sub-header">Podar Namaskar! by @Rajarshi~Yadav</div>
+
+        <div class="chat-output" id="chatOutput"></div>
+
+
+        <div class="input-area">
+            <input id="userInput" placeholder="Ask anything..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <div class="send-btn" onclick="sendMessage()">➤</div>
+        </div>
+        <!-- Developer Badge -->
+        <!-- Developer Badge -->
+
     </div>
 
-</div>
+    <script>
 
-<script>
+        function sendMessage() {
+            let input = document.getElementById("userInput");
+            let text = input.value.trim();
+            if (!text) return;
 
-function sendMessage() {
-    let input = document.getElementById("userInput");
-    let text = input.value.trim();
-    if (!text) return;
+            let output = document.getElementById("chatOutput");
 
-    let output = document.getElementById("chatOutput");
+            // Show user message
+            output.innerHTML += `<div class='msg user'>${text}</div>`;
+            input.value = "";
 
-    output.innerHTML += `<div class='msg user'>${text}</div>`;
-    input.value = "";
+            // Typing
+            let typing = document.createElement("div");
+            typing.className = "msg bot";
+            typing.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
+            output.appendChild(typing);
 
-    /* Typing indicator */
-    let typingDiv = document.createElement("div");
-    typingDiv.className = "msg bot";
-    typingDiv.innerHTML = `
-        <div class="typing">
-            <span></span><span></span><span></span>
-        </div>`;
-    output.appendChild(typingDiv);
+            output.scrollTop = output.scrollHeight;
 
-    output.scrollTop = output.scrollHeight;
-
-    setTimeout(() => {
-        typingDiv.remove();
-
-        let reply = botReply(text);
-
-        let botMsg = document.createElement("div");
-        botMsg.className = "msg bot";
-        botMsg.innerHTML = `<span class="botText"></span>`;
-        output.appendChild(botMsg);
-
-        typeWriterEffect(reply, botMsg.querySelector(".botText"));
-
-        output.scrollTop = output.scrollHeight;
-
-    }, 700);
-}
-
-/* TYPEWRITER EFFECT */
-function typeWriterEffect(text, element) {
-    let i = 0;
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, 18);
+            setTimeout(() => {
+                typing.remove();
+                generateBotReply(text);
+            }, 700);
         }
-    }
-    type();
-}
 
-/* BOT LOGIC */
-function botReply(userText) {
-    userText = userText.toLowerCase();
 
-    if (userText.includes("hello") || userText.includes("hi"))
-        return "Podar Namaskar! How can I assist you today?";
+        /* FINAL BOT REPLY FUNCTION */
+        function generateBotReply(text) {
+            const output = document.getElementById("chatOutput");
+            const replyContainer = document.createElement("div");
+            replyContainer.className = "msg bot";
 
-    if (userText.includes("about school"))
-    return "Podar International School, founded in 1927, is a trusted education network with 150+ schools, offering value-based, modern, and holistic learning for over 2,50,000 students. Visit: www.podareducation.org";
+            // IMAGE DETECTION
+            const imageReply = detectImage(text);
+            if (imageReply) {
+                replyContainer.innerHTML = `
+            <div>Here is the image you requested:</div>
+            <img src="${imageReply}">
+        `;
+                output.appendChild(replyContainer);
+                output.scrollTop = output.scrollHeight;
+                return;
+            }
 
-    if (userText.includes("school timing"))
-        return "School timings at Podar are 8:00 AM to 2:00 PM.";
+            // TEXT REPLIES
+            let reply = botReply(text);
 
-    return "Thanks for your query! I'll help you with more information shortly.";
-}
+            replyContainer.innerHTML = `<span class="botText"></span>`;
+            output.appendChild(replyContainer);
 
-</script>
+            typeWriterEffect(reply, replyContainer.querySelector(".botText"));
+            output.scrollTop = output.scrollHeight;
+        }
+
+
+        /* CHECK IF USER REQUESTS AN IMAGE */
+        function detectImage(text) {
+            text = text.toLowerCase();
+
+            if (text.includes("cat"))
+                return "images/cat.jpg";
+
+            if (text.includes("dog"))
+                return "images/dog.jpg";
+            if (text.includes("podar logo"))
+                return "images/podar_logo.png";
+            if (text.includes("school image"))
+                return "images/podar_img.jpg";
+            return null;
+        }
+
+
+        /* TYPEWRITER EFFECT */
+        function typeWriterEffect(text, element) {
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 18);
+                }
+            }
+            type();
+        }
+
+        /* NORMAL BOT TEXT REPLIES */
+        function botReply(userText) {
+            userText = userText.toLowerCase();
+
+            if (userText.includes("hello") || userText.includes("hi"))
+             return "Podar Namaskar! How can I assist you today?";
+
+            if (userText.includes("about school"))
+              return "Podar International School, founded in 1927, is a trusted education network with 150+ schools, offering value-based, modern, and holistic learning for over 2,50,000 students. Visit: www.podareducation.org";
+
+            if (userText.includes("school timing") || userText.includes("timing"))
+            return "School timings at Podar are 8:00 AM to 2:00 PM.";
+
+            
+
+            return "Thank you for your question! I will get more information shortly.";
+        }
+
+    </script>
 
 </body>
+
 </html>
