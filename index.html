@@ -40,6 +40,7 @@
             right: 15px;
             top: 10px;
             filter: drop-shadow(0 0 8px #00c6ff);
+            transform: perspective(400px) translateZ(20px);
             animation: softPulse 3s infinite ease-in-out;
         }
 
@@ -60,7 +61,7 @@
             }
         }
 
-        /* MAIN 3D HEADING */
+        /* HEADING */
         .header {
             text-align: center;
             padding: 20px;
@@ -69,9 +70,7 @@
             color: white;
             background: #121212;
             letter-spacing: 2px;
-            text-shadow:
-                0 0 6px cyan,
-                0 0 20px #008cff;
+            text-shadow: 0 0 6px cyan, 0 0 20px #008cff;
             border-bottom: 1px solid #1f1f1f;
         }
 
@@ -81,21 +80,17 @@
             color: #00c6ff;
             letter-spacing: 4px;
             margin-top: -10px;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
             font-weight: 700;
-            animation: fadeSlideIn 2.2s ease-out forwards;
         }
 
-        @keyframes fadeSlideIn {
-            0% {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Developer Tag */
+        .developer {
+            text-align: center;
+            color: whitesmoke;
+            font-size: 13px;
+            margin-bottom: 10px;
+            opacity: 0.9;
         }
 
         /* CHAT OUTPUT */
@@ -107,7 +102,7 @@
             background: #101010;
         }
 
-        /* CHAT BUBBLES */
+        /* CHAT MESSAGE STYLES */
         .msg {
             max-width: 78%;
             padding: 14px 18px;
@@ -132,7 +127,6 @@
             border-radius: 14px 14px 14px 4px;
         }
 
-        /* IMAGE INSIDE BOT MESSAGE */
         .bot img {
             width: 240px;
             border-radius: 10px;
@@ -200,59 +194,47 @@
         }
 
         @keyframes blink {
-
-            0%,
-            100% {
-                opacity: .2;
-            }
-
-            50% {
-                opacity: 1;
-                transform: translateY(-3px);
-            }
+            0%, 100% { opacity: .2 }
+            50% { opacity: 1; transform: translateY(-3px); }
         }
 
-        /* Developer Section */
-
-        .logo {
-            width: 80px;
-            /* default size */
-            height: auto;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-
-            /* Make it 3D stable (non-rotating) */
-            transform: perspective(400px) translateZ(20px);
-            filter: drop-shadow(0 0 8px #00eaff);
-        }
-
-        /* Prevent overflow on tablets */
+        /* RESPONSIVE LOGO */
         @media (max-width: 900px) {
-            .logo {
-                width: 65px;
-                right: 8px;
-                top: 8px;
-            }
+            .logo { width: 65px; }
         }
 
-        /* Prevent overflow on smaller phones */
         @media (max-width: 600px) {
-            .logo {
-                width: 55px;
-                right: 5px;
-                top: 5px;
-            }
+            .logo { width: 55px; }
         }
 
-        /* Ultra-small screens */
         @media (max-width: 420px) {
-            .logo {
-                width: 45px;
-                right: 4px;
-                top: 4px;
-            }
+            .logo { width: 45px; }
         }
+
+        .mic-btn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: #4b69ff;
+    color: white;
+    font-size: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 6px;
+    transition: 0.3s;
+}
+
+.mic-btn.listening {
+    background: #ff3b30;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+    100% { transform: scale(1); }
+}
+
     </style>
 </head>
 
@@ -260,133 +242,163 @@
 
     <div class="chat-wrapper">
 
-
         <!-- Logo -->
         <img src="images/podar_logo.png" class="logo">
 
         <div class="header">Podar A.I</div>
         <div class="sub-header">Podar Namaskar!</div>
-        <div><h4 style="color:whitesmoke; font-size: small; text-align: center;"><i>Developed by @Rajarshi-Yadav</i></h4></div>
+        <div class="developer"><i>Developed by @Rajarshi-Yadav</i></div>
 
         <div class="chat-output" id="chatOutput"></div>
-
 
         <div class="input-area">
             <input id="userInput" placeholder="Ask anything..." onkeydown="if(event.key==='Enter') sendMessage()">
             <div class="send-btn" onclick="sendMessage()">➤</div>
-        </div>
-        <!-- Developer Badge -->
-        <!-- Developer Badge -->
 
+            <button id="micBtn" class="mic-btn">
+    🎤
+</button>
+
+        </div>
     </div>
 
-    <script>
+  <script>
 
-        function sendMessage() {
-            let input = document.getElementById("userInput");
-            let text = input.value.trim();
-            if (!text) return;
+function sendMessage() {
+    let input = document.getElementById("userInput");
+    let text = input.value.trim();
+    if (!text) return;
 
-            let output = document.getElementById("chatOutput");
+    let output = document.getElementById("chatOutput");
 
-            // Show user message
-            output.innerHTML += `<div class='msg user'>${text}</div>`;
-            input.value = "";
+    // User bubble
+    output.innerHTML += `<div class='msg user'>${text}</div>`;
+    input.value = "";
 
-            // Typing
-            let typing = document.createElement("div");
-            typing.className = "msg bot";
-            typing.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
-            output.appendChild(typing);
+    // Typing animation
+    let typing = document.createElement("div");
+    typing.className = "msg bot";
+    typing.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
+    output.appendChild(typing);
+    output.scrollTop = output.scrollHeight;
 
-            output.scrollTop = output.scrollHeight;
+    setTimeout(() => {
+        typing.remove();
+        generateBotReply(text);
+    }, 700);
+}
 
-            setTimeout(() => {
-                typing.remove();
-                generateBotReply(text);
-            }, 700);
-        }
+/* MAIN BOT REPLY */
+function generateBotReply(text) {
+    const output = document.getElementById("chatOutput");
+    const replyContainer = document.createElement("div");
+    replyContainer.className = "msg bot";
 
+    let lower = text.toLowerCase();
 
-        /* FINAL BOT REPLY FUNCTION */
-        function generateBotReply(text) {
-            const output = document.getElementById("chatOutput");
-            const replyContainer = document.createElement("div");
-            replyContainer.className = "msg bot";
-
-            // IMAGE DETECTION
-            const imageReply = detectImage(text);
-            if (imageReply) {
-                replyContainer.innerHTML = `
-            <div>Here is the image you requested:</div>
-            <img src="${imageReply}">
+    /* 1️⃣ MAP DETECTION FIRST */
+    if (
+        lower.includes("location") ||
+        lower.includes("school map") ||
+        lower.includes("podar location") ||
+        lower.includes("navigate") ||
+        lower.includes("directions") ||
+        lower.includes("how to reach")
+    ) {
+        replyContainer.innerHTML = `
+            <div>Here is the school location:</div>
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4390.206796279784!2d79.9688281759145!3d23.138932011974752!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3981ad495ebc1129%3A0x20d0ecc6c37f1c33!2sPodar%20International%20School%2C%20Jabalpur!5e1!3m2!1sen!2sin!4v1764179965332!5m2!1sen!2sin"
+                width="100%" 
+                height="260" 
+                style="border:0; margin-top:10px; border-radius:12px;"
+                allowfullscreen="" 
+                loading="lazy">
+            </iframe>
         `;
-                output.appendChild(replyContainer);
-                output.scrollTop = output.scrollHeight;
-                return;
-            }
+        output.appendChild(replyContainer);
+        output.scrollTop = output.scrollHeight;
 
-            // TEXT REPLIES
-            let reply = botReply(text);
+        speakText("Here is the school location on Google Maps.");  // 🔊 voice added
+        return;
+    }
 
-            replyContainer.innerHTML = `<span class="botText"></span>`;
-            output.appendChild(replyContainer);
+    /* 2️⃣ IMAGE DETECTION */
+    const imageReply = detectImage(lower);
+    if (imageReply) {
+        replyContainer.innerHTML = `
+            <div>Here is the image you requested:</div>
+            <img src="${imageReply}" style="max-width:90%; border-radius:12px; margin-top:8px;">
+        `;
+        output.appendChild(replyContainer);
+        output.scrollTop = output.scrollHeight;
 
-            typeWriterEffect(reply, replyContainer.querySelector(".botText"));
-            output.scrollTop = output.scrollHeight;
+        speakText("Here is the image you requested."); // 🔊 voice added
+        return;
+    }
+
+    /* 3️⃣ NORMAL TEXT REPLY */
+    let reply = botReply(lower);
+    replyContainer.innerHTML = `<span class="botText"></span>`;
+    output.appendChild(replyContainer);
+
+    typeWriterEffect(reply, replyContainer.querySelector(".botText"));
+}
+
+
+/* IMAGE HANDLING */
+function detectImage(text) {
+    if (text.includes("cat")) return "images/cat.jpg";
+    if (text.includes("dog")) return "images/dog.jpg";
+    if (text.includes("podar logo")) return "images/podar_logo.png";
+    if (text.includes("school image")) return "images/podar_img.jpg";
+    return null;
+}
+
+
+/* TYPEWRITER EFFECT + VOICE */
+function typeWriterEffect(text, element) {
+    let i = 0;
+
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, 18);
+        } else {
+            speakText(text); // 🔊 voice AFTER typing finishes
         }
+    }
+    type();
+}
 
+/* TEXT-BASED BOT RESPONSES */
+function botReply(userText) {
+    if (userText.includes("hello") || userText.includes("hi"))
+        return "Podar Namaskar! How can I assist you today?";
 
-        /* CHECK IF USER REQUESTS AN IMAGE */
-        function detectImage(text) {
-            text = text.toLowerCase();
+    if (userText.includes("about school"))
+        return "Podar International School, founded in 1927, is a trusted education network with 150+ schools, offering value-based, modern, and holistic learning.";
 
-            if (text.includes("cat"))
-                return "images/cat.jpg";
+    if (userText.includes("timing"))
+        return "School timings at Podar are 8:00 AM to 2:00 PM.";
 
-            if (text.includes("dog"))
-                return "images/dog.jpg";
-            if (text.includes("podar logo"))
-                return "images/podar_logo.png";
-            if (text.includes("school image"))
-                return "images/podar_img.jpg";
-            return null;
-        }
+    return "Thank you for your question! I will get more information shortly.";
+}
 
+/* 🔊 TEXT-TO-SPEECH */
+function speakText(text) {
+    speechSynthesis.cancel(); // stop old speech
 
-        /* TYPEWRITER EFFECT */
-        function typeWriterEffect(text, element) {
-            let i = 0;
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, 18);
-                }
-            }
-            type();
-        }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
 
-        /* NORMAL BOT TEXT REPLIES */
-        function botReply(userText) {
-            userText = userText.toLowerCase();
+    speechSynthesis.speak(utterance);
+}
 
-            if (userText.includes("hello") || userText.includes("hi"))
-             return "Podar Namaskar! How can I assist you today?";
+</script>
 
-            if (userText.includes("about school"))
-              return "Podar International School, founded in 1927, is a trusted education network with 150+ schools, offering value-based, modern, and holistic learning for over 2,50,000 students. Visit: www.podareducation.org";
-
-            if (userText.includes("school timing") || userText.includes("timing"))
-            return "School timings at Podar are 8:00 AM to 2:00 PM.";
-
-            
-
-            return "Thank you for your question! I will get more information shortly.";
-        }
-
-    </script>
-
-</body>
-
+ </body>
 </html>
